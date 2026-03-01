@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String          @id @default(uuid())
+  email        String          @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime        @default(now())
+  sessions     UploadSession[]
+  logFiles     LogFile[]
+}
+
+model UploadSession {
+  id        String    @id @default(uuid())
+  userId    String
+  name      String?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  logFiles  LogFile[]
+}
+
+model LogFile {
+  id           String        @id @default(uuid())
+  sessionId    String
+  userId       String
+  originalName String
+  filePath     String
+  logType      LogType
+  status       FileStatus
+  totalLines   Int?
+  parsedLines  Int?
+  errorMessage String?
+  aiSummary    String?
+  createdAt    DateTime      @default(now())
+  completedAt  DateTime?
+  session      UploadSession @relation(fields: [sessionId], references: [id])
+  user         User          @relation(fields: [userId], references: [id])
+  entries      LogEntry[]
+  anomalies    Anomaly[]
+}
+
+model LogEntry {
+  id            String    @id @default(uuid())
+  fileId        String
+  lineNumber    Int
+  timestamp     DateTime
+  sourceIp      String?
+  userIdentity  String?
+  action        String
+  target        String
+  statusCode    Int?
+  bytesSent     BigInt?
+  bytesReceived BigInt?
+  severity      Severity  @default(low)
+  rawLine       String
+  metadata      Json
+  file          LogFile   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  anomalies     Anomaly[]
+
+  @@index([fileId, timestamp])
+  @@index([fileId, sourceIp])
+}
+
+model Anomaly {
+  id               String    @id @default(uuid())
+  fileId           String
+  entryId          String?
+  ruleName         String
+  severity         Severity
+  confidence       Float
+  reason           String
+  context          Json
+  aiExplanation    String?
+  aiThreatCategory String?
+  aiMitreTechnique String?
+  aiAction         String?
+  detectedAt       DateTime  @default(now())
+  file             LogFile   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  entry            LogEntry? @relation(fields: [entryId], references: [id])
+
+  @@index([fileId, confidence(sort: Desc)])
+}
+
+enum LogType {
+  nginx
+  zscaler
+  unknown
+}
+
+enum FileStatus {
+  uploaded
+  processing
+  complete
+  failed
+}
+
+enum Severity {
+  low
+  medium
+  high
+  critical
+}

@@ -6,7 +6,7 @@ import { AppError } from '../../middleware/error.middleware'
 import { JwtPayload } from '../../types'
 
 export const authService = {
-  async login(email: string, password: string): Promise<string> {
+  async login(email: string, password: string) {
     const user = await prisma.user.findUnique({ where: { email } })
 
     if (!user) {
@@ -23,7 +23,7 @@ export const authService = {
       expiresIn: env.JWT_EXPIRY as string,
     })
 
-    return token
+    return { token, user: { id: user.id, email: user.email, name: user.name } }
   },
 
   async signup(email: string, password: string, name?: string) {

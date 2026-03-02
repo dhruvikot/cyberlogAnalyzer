@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { api } from '@/services/api'
 import {
@@ -16,17 +16,7 @@ import {
 
 export default function HomePage() {
   const router = useRouter()
-  const [checking, setChecking] = useState(true)
-  const [loggedIn, setLoggedIn] = useState(false)
-
-  useEffect(() => {
-    api.auth
-      .checkAuth()
-      .then(isLoggedIn => setLoggedIn(isLoggedIn))
-      .finally(() => setChecking(false))
-  }, [])
-
-  if (checking) return null
+  const [loggedIn] = useState(() => api.auth.checkAuth())
 
   const features = [
     {

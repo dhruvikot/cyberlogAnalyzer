@@ -29,18 +29,13 @@ export const authController = {
       }
 
       const { email, password } = result.data
-      const token = await authService.login(email, password)
+      const { token, user } = await authService.login(email, password)
 
-      const isProduction = process.env.NODE_ENV === 'production'
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-        path: '/',
+      res.json({
+        success: true,
+        token,
+        user: { email: user.email, name: user.name },
       })
-
-      res.json({ success: true, message: 'Login successful', user: { email } })
     } catch (error) {
       next(error)
     }
@@ -56,18 +51,9 @@ export const authController = {
       const { email, password, name } = result.data
       const { user, token } = await authService.signup(email, password, name)
 
-      const isProduction = process.env.NODE_ENV === 'production'
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-        path: '/',
-      })
-
       res.status(201).json({
         success: true,
-        message: 'Account created successfully',
+        token,
         user: { email: user.email },
       })
     } catch (error) {
@@ -76,7 +62,6 @@ export const authController = {
   },
 
   async logout(req: Request, res: Response): Promise<void> {
-    res.cookie('token', '', { httpOnly: true, sameSite: 'lax', maxAge: 0 })
     res.json({ success: true, message: 'Logged out' })
   },
 

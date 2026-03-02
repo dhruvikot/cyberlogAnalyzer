@@ -22,22 +22,35 @@ const uploadLimiter = rateLimit({
   message: { success: false, error: 'Too many uploads. Try again later.' },
 })
 
-const ALLOWED_ORIGINS = [
-  'http://localhost:3000',
-  process.env.FRONTEND_URL,
-].filter((origin): origin is string => Boolean(origin))
+const getAllowedOrigins = (): string[] => {
+  const origins = [
+    'http://localhost:3000',
+    'https://cyberlog-analyzer.vercel.app',
+  ]
+
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL)
+  }
+
+  return [...new Set(origins)] // deduplicate
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin header (server-to-server, curl, mobile apps)
+    const allowed = getAllowedOrigins()
+
+    console.log('[CORS] Request from origin:', origin)
+    console.log('[CORS] Allowed origins:', allowed)
+
     if (!origin) {
       return callback(null, true)
     }
 
-    if (ALLOWED_ORIGINS.includes(origin)) {
+    if (allowed.includes(origin)) {
       return callback(null, true)
     }
 
+    console.log('[CORS] Blocked origin:', origin)
     return callback(
       new Error(`CORS: Origin ${origin} is not permitted`),
       false
@@ -48,8 +61,16 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 
-// Handle OPTIONS preflight for all routes
-app.options('*', cors())
+app.options('*', cors({
+  origin: (origin, callback) => {
+    const allowed = getAllowedOrigins()
+    if (!origin || allowed.includes(origin)) {
+      return callback(null, true)
+    }
+    return callback(new Error('Not allowed'), false)
+  },
+  credentials: true,
+}))
 
 app.use(express.json())
 app.use(cookieParser())

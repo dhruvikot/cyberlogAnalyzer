@@ -19,8 +19,8 @@ export const authService = {
     }
 
     const payload: JwtPayload = { userId: user.id, email: user.email }
-    const token = jwt.sign(payload, env.JWT_SECRET, {
-      expiresIn: env.JWT_EXPIRY,
+    const token = jwt.sign(payload, env.JWT_SECRET as string, {
+      expiresIn: env.JWT_EXPIRY as string,
     })
 
     return token
@@ -44,8 +44,8 @@ export const authService = {
 
     const token = jwt.sign(
       { userId: user.id, email: user.email } as JwtPayload,
-      env.JWT_SECRET,
-      { expiresIn: env.JWT_EXPIRY }
+      env.JWT_SECRET as string,
+      { expiresIn: env.JWT_EXPIRY as string }
     )
 
     return { user, token }

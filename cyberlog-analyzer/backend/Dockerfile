@@ -16,4 +16,4 @@ RUN npx prisma generate
 
 EXPOSE 4000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npx ts-node src/server.ts"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx ts-node --transpile-only src/server.ts"]

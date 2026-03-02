@@ -2,8 +2,6 @@
 
 A full-stack security log analysis platform for SOC and MDR teams. Upload Nginx or ZScaler proxy logs and get automated threat detection with AI-powered explanations in under 60 seconds.
 
----
-
 ## Overview
 
 CyberLog Analyzer parses raw security logs, runs five statistical detection rules, and uses Claude AI to explain every flagged anomaly in plain English with MITRE ATT&CK mapping. Built for analysts who need answers fast, not dashboards that require a manual.
@@ -32,7 +30,7 @@ CyberLog Analyzer parses raw security logs, runs five statistical detection rule
 | Backend | Node.js, Express, TypeScript (via tsx) |
 | Database | PostgreSQL, Prisma ORM |
 | AI | Anthropic Claude Haiku |
-| Auth | JWT in httpOnly cookies, bcrypt |
+| Auth | JWT Bearer tokens, bcrypt |
 | Infrastructure | Docker (local), Railway (backend), Vercel (frontend) |
 
 ---
@@ -45,12 +43,21 @@ CyberLog Analyzer parses raw security logs, runs five statistical detection rule
 
 ---
 
+## Live Demo
+
+- **Frontend:** https://cyberlog-analyzer.vercel.app
+- **Backend API:** https://cyberloganalyzer-production.up.railway.app/api/health
+- **Demo login:** admin@cyberlog.com / password123
+
+> Note: First load may take 5–10 seconds as the Railway free tier server wakes from sleep.
+
+---
 ## Local Setup
 
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/cyberlog-analyzer.git
+git clone https://github.com/dhruvikot/cyberlogAnalyzer.git
 cd cyberlog-analyzer
 ```
 
@@ -97,8 +104,6 @@ Frontend is running at `http://localhost:3000`
 Email:    admin@cyberlog.com
 Password: password123
 ```
-
----
 
 ## Environment Variables
 
@@ -169,9 +174,7 @@ After rules flag anomalies, results are sent to `claude-haiku-4-5-20251001` in b
 
 One executive summary per file is also generated — a 3-sentence brief written for SOC managers with specific IPs, domains, and numbers.
 
-**Cost:** ~$0.0001 per file at Claude Haiku pricing.
 
----
 
 ## API Reference
 
@@ -202,56 +205,13 @@ GET     /api/files/:id/entries
 DELETE  /api/files/:id
 ```
 
----
 
-## Project Structure
 
-```
-cyberlog-analyzer/
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   ├── seed.ts
-│   │   └── migrations/
-│   └── src/
-│       ├── config/          # env validation, database singleton
-│       ├── middleware/       # auth guard, file upload, error handler
-│       └── modules/
-│           ├── auth/         # login, signup, JWT
-│           ├── sessions/     # session management, correlations
-│           ├── files/        # upload, status, entries, analysis
-│           ├── parsers/      # nginx parser, zscaler parser, auto-detector
-│           ├── anomaly/      # 5 detection rules, orchestrator
-│           └── ai/           # claude service, batch explanation, summary
-├── frontend/
-│   ├── app/
-│   │   ├── page.tsx          # landing page
-│   │   ├── login/
-│   │   ├── signup/
-│   │   ├── upload/
-│   │   ├── history/
-│   │   └── dashboard/[fileId]/
-│   ├── components/
-│   │   ├── dashboard/        # KPI cards, timeline, anomaly cards, tables
-│   │   ├── upload/           # dropzone, processing status
-│   │   └── ui/               # badge, confidence bar
-│   ├── services/
-│   │   └── api.ts            # all backend calls, auth error handling
-│   ├── hooks/
-│   │   ├── useAuth.ts
-│   │   └── usePolling.ts
-│   └── middleware.ts          # route protection
-└── sample_logs/
-    ├── sample_nginx.log
-    └── sample_zscaler.csv
-```
-
----
 
 ## Security
 
 - **Passwords** — bcrypt with 12 salt rounds (~250ms per hash, brute force impractical)
-- **Session tokens** — JWT stored in httpOnly cookies, inaccessible to JavaScript (XSS resistant)
+- **Session tokens** — JWT Bearer tokens sent via Authorization header, stored in sessionStorage
 - **File validation** — magic bytes checked in addition to extension and MIME type
 - **Rate limiting** — upload endpoint rate limited per user
 - **SQL injection** — all queries via Prisma parameterized statements

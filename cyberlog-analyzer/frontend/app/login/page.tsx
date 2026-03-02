@@ -100,9 +100,9 @@ export default function LoginPage() {
               Create one free
             </button>
           </p>
-          <p className="text-center text-slate-400 text-xs mt-3">
+          {/* <p className="text-center text-slate-400 text-xs mt-3">
             Demo: admin@cyberlog.com / password123
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

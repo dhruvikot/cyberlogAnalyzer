@@ -1,7 +1,7 @@
 import multer from 'multer'
 import path from 'path'
 import fs from 'fs'
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'crypto'
 import { Request } from 'express'
 import { AppError } from './error.middleware'
 import { env } from '../config/env'
@@ -9,7 +9,7 @@ import { env } from '../config/env'
 const storage = multer.diskStorage({
   destination: (req: Request, file, cb) => {
     // Each upload gets its own folder with uuid
-    const uploadId = uuidv4()
+    const uploadId = randomUUID()
     const dir = path.join(env.UPLOAD_DIR, uploadId)
 
     // Create directory if it doesn't exist

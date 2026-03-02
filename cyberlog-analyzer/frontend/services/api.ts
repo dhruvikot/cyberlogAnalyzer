@@ -2,32 +2,34 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
 async function request<T>(
   endpoint: string,
-  options?: RequestInit
+  options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     credentials: 'include',
     headers: {
-      ...(options?.body instanceof FormData
+      // Don't set Content-Type for FormData — browser sets it with boundary
+      ...(options.body instanceof FormData
         ? {}
         : { 'Content-Type': 'application/json' }),
-      ...options?.headers,
+      ...options.headers,
     },
   })
 
-  if (res.status === 401) {
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login'
+  if (!response.ok) {
+    if (response.status === 401) {
+      if (
+        typeof window !== 'undefined' &&
+        !window.location.pathname.includes('/login')
+      ) {
+        window.location.href = '/login'
+      }
     }
-    throw new Error('Unauthorized')
+    const error = await response.json().catch(() => ({ message: 'Request failed' }))
+    throw new Error((error as any).error || error.message || `HTTP ${response.status}`)
   }
 
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({}))
-    throw new Error((error as any).error || `Request failed: ${res.status}`)
-  }
-
-  return res.json() as Promise<T>
+  return response.json() as Promise<T>
 }
 
 export const api = {

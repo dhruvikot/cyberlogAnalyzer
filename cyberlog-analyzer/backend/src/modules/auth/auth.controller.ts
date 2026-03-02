@@ -31,11 +31,12 @@ export const authController = {
       const { email, password } = result.data
       const token = await authService.login(email, password)
 
+      const isProduction = process.env.NODE_ENV === 'production'
       res.cookie('token', token, {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        secure: process.env.NODE_ENV === 'production' ? true : false,
-        maxAge: 24 * 60 * 60 * 1000,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
         path: '/',
       })
 
@@ -55,11 +56,12 @@ export const authController = {
       const { email, password, name } = result.data
       const { user, token } = await authService.signup(email, password, name)
 
+      const isProduction = process.env.NODE_ENV === 'production'
       res.cookie('token', token, {
         httpOnly: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        secure: process.env.NODE_ENV === 'production' ? true : false,
-        maxAge: 24 * 60 * 60 * 1000,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
         path: '/',
       })
 

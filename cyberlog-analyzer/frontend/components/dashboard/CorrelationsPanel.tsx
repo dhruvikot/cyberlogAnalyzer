@@ -50,7 +50,7 @@ export function CorrelationsPanel({
               </span>
             </span>
             <span className="text-red-600 bg-red-100 border border-red-200 px-2 py-0.5 rounded-full font-medium">
-              {c.rulesTriggered} rule{c.rulesTriggered !== 1 ? 's' : ''}{' '}
+              {c.rulesTriggered} rule{Number(c.rulesTriggered) !== 1 ? 's' : ''}{' '}
               triggered
             </span>
           </div>

@@ -284,7 +284,7 @@ export default function DashboardPage() {
           {activeTab === 'timeline' && analysis && (
             <div className="space-y-4">
               <TimelineChart timeline={analysis.timeline} />
-              <TopIPsTable topIPs={(analysis as any).topIps ?? analysis.topIPs} />
+              <TopIPsTable topIPs={(analysis as any).topIps ?? (analysis as any).topIPs} />
             </div>
           )}
 

@@ -85,7 +85,8 @@ export interface Analysis {
     blockedEvents: number
     anomalyCount: number
   }
-  topIps: { ip: string; count: number }[]
+  topIps?: { ip: string; count: number }[]
+  topIPs?: { ip: string; count: number }[]
   topTargets: { target: string; count: number }[]
   timeline: { bucket: string; count: number; highCount: number }[]
 }

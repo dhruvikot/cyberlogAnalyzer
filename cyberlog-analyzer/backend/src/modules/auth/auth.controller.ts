@@ -35,8 +35,8 @@ export const authController = {
       res.cookie('token', token, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
         path: '/',
       })
 
@@ -60,8 +60,8 @@ export const authController = {
       res.cookie('token', token, {
         httpOnly: true,
         secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours in ms
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000,
         path: '/',
       })
 

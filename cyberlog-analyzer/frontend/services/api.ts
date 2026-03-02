@@ -30,14 +30,12 @@ async function request<T>(
   return res.json() as Promise<T>
 }
 
-const BASE_URL_INTERNAL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
-
 export const api = {
   auth: {
     // Silent check — never redirects on 401, just returns true/false
     checkAuth: async (): Promise<boolean> => {
       try {
-        const res = await fetch(`${BASE_URL_INTERNAL}/api/auth/me`, {
+        const res = await fetch(`${BASE_URL}/api/auth/me`, {
           credentials: 'include',
         })
         return res.ok

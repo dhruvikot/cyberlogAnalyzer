@@ -1,27 +1,9 @@
-# Dependencies
 node_modules/
-
-# Build output
-dist/
-
-# Environment variables
 .env
-
-# Logs
+.env.local
+.env.production
+dist/
 *.log
-npm-debug.log*
-
-# OS
+uploads/
+.next/
 .DS_Store
-Thumbs.db
-
-# IDE
-.idea/
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# Docker volumes
-postgres_data/

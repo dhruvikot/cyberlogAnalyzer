@@ -33,8 +33,8 @@ export default function HistoryPage() {
   useEffect(() => {
     api.sessions
       .getAll()
-      .then(res => setSessions(res.sessions))
-      .catch(console.error)
+      .then(res => setSessions(res.sessions.filter(s => s.logFiles.length > 0)))
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 

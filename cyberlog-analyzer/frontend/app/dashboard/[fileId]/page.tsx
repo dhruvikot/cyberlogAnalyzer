@@ -85,7 +85,7 @@ export default function DashboardPage() {
     api.sessions
       .correlations(file.sessionId)
       .then(res => setCorrelations(res.correlations))
-      .catch(console.error)
+      .catch(() => {})
   }, [file?.sessionId])
 
   const handleFilterChange = useCallback(
@@ -94,8 +94,8 @@ export default function DashboardPage() {
         const res = await api.files.getEntries(fileId, filters)
         setEntries(res.entries)
         setPagination(res.pagination)
-      } catch (err) {
-        console.error(err)
+      } catch {
+        // silent — table stays showing previous results
       }
     },
     [fileId]
@@ -110,8 +110,8 @@ export default function DashboardPage() {
         })
         setEntries(res.entries)
         setPagination(res.pagination)
-      } catch (err) {
-        console.error(err)
+      } catch {
+        // silent — pagination stays on current page
       }
     },
     [fileId]

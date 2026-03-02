@@ -8,7 +8,7 @@ const envSchema = z.object({
   PORT: z.string().default('4000').transform(Number),
   UPLOAD_DIR: z.string().default('./uploads'),
   MAX_FILE_SIZE_MB: z.string().default('50').transform(Number),
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z.enum(['development', 'production']).default('development'),
   FRONTEND_URL: z.string().default('http://localhost:3000'),
 })
 

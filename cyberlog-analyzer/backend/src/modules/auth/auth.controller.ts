@@ -34,8 +34,9 @@ export const authController = {
       res.cookie('token', token, {
         httpOnly: true,
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production' ? true : false,
         maxAge: 24 * 60 * 60 * 1000,
+        path: '/',
       })
 
       res.json({ success: true, message: 'Login successful', user: { email } })
@@ -57,8 +58,9 @@ export const authController = {
       res.cookie('token', token, {
         httpOnly: true,
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === 'production' ? true : false,
         maxAge: 24 * 60 * 60 * 1000,
+        path: '/',
       })
 
       res.status(201).json({
